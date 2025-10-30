@@ -1,0 +1,36 @@
+<div class="login-container">
+  <h2>Welcome to Drop Dreamer</h2>
+  <p>Please choose an option:</p>
+
+  <button (click)="showLoginForm()">Login</button>
+  <button (click)="showSignupForm()">Sign Up</button>
+
+  <div *ngIf="isLogin">
+    <h3>Login</h3>
+    <form>
+      <label>Email:</label>
+      <input type="email" placeholder="Enter your email" />
+
+      <label>Password:</label>
+      <input type="password" placeholder="Enter your password" />
+
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <div *ngIf="isSignup">
+    <h3>Sign Up</h3>
+    <form>
+      <label>Username:</label>
+      <input type="text" placeholder="Enter username" />
+
+      <label>Email:</label>
+      <input type="email" placeholder="Enter email" />
+
+      <label>Password:</label>
+      <input type="password" placeholder="Enter password" />
+
+      <button type="submit">Sign Up</button>
+    </form>
+  </div>
+</div>
