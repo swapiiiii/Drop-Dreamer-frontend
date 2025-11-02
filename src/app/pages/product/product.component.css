@@ -1,0 +1,66 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2c3e50;
+  color: white;
+  padding: 12px 24px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn {
+  color: white;
+  background-color: transparent;
+  border: 1px solid white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background-color: white;
+  color: #2c3e50;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.username {
+  background-color: white;
+  color: #2c3e50;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.product-section {
+  text-align: center;
+  margin-top: 60px;
+}
+
+.product-section h2 {
+  color: #2c3e50;
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.product-section p {
+  color: #555;
+  font-size: 18px;
+}

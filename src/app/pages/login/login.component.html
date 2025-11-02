@@ -1,73 +1,56 @@
 <div class="login-container">
   <h2>Welcome to Drop Dreamer</h2>
-
-  <div *ngIf="!isLogin && !isSignup && !isOtpStep">
-    <p>Please choose an option:</p>
-    <button (click)="showLoginForm()">Login</button>
-    <button (click)="showSignupForm()">Sign Up</button>
-  </div>
+  <p class="subtitle">Login to continue</p>
 
   <!-- Spinner -->
   <div *ngIf="loading" class="spinner"></div>
 
-  <!-- Login -->
-  <div *ngIf="isLogin && !loading">
-    <h3>Login</h3>
-    <form (ngSubmit)="onLogin()">
-      <label>Email:</label>
-      <input type="email" [(ngModel)]="email" name="email" required />
+  <!-- Login Form -->
+  <form *ngIf="!loading" (ngSubmit)="onLogin()" class="login-form">
+    <label>Email</label>
+    <input
+      type="email"
+      [(ngModel)]="email"
+      name="email"
+      placeholder="Enter your email"
+      required
+    />
 
-      <label>Password:</label>
-      <input type="password" [(ngModel)]="password" name="password" required />
+    <label>Password</label>
+    <input
+      type="password"
+      [(ngModel)]="password"
+      name="password"
+      placeholder="Enter your password"
+      required
+    />
 
-      <button type="submit">Login</button>
-    </form>
-  </div>
+    <button type="submit">Login</button>
+  </form>
 
-  <!-- Signup -->
-  <div *ngIf="isSignup && !loading">
-    <h3>Sign Up</h3>
-    <form (ngSubmit)="onSignup()">
-      <label>First Name:</label>
-      <input type="text" [(ngModel)]="firstName" name="firstName" required />
+  <!-- Message -->
+  <p
+    *ngIf="message"
+    [ngStyle]="{
+      color:
+        messageType === 'success'
+          ? 'green'
+          : messageType === 'error'
+          ? 'red'
+          : 'orange'
+    }"
+    class="message"
+  >
+    {{ message }}
+  </p>
 
-      <label>Last Name:</label>
-      <input type="text" [(ngModel)]="lastName" name="lastName" required />
-
-      <label>Email:</label>
-      <input type="email" [(ngModel)]="email" name="email" required />
-
-      <label>Mobile:</label>
-      <input type="text" [(ngModel)]="mobile" name="mobile" />
-
-      <label>Password:</label>
-      <input type="password" [(ngModel)]="password" name="password" required />
-
-      <button type="submit">Sign Up</button>
-    </form>
-  </div>
-
-  <!-- OTP Verification -->
-  <div *ngIf="isOtpStep && !loading">
-    <h3>Verify Email</h3>
-    <p>Enter the 6-digit OTP sent to {{ email }}</p>
-    <input type="text" [(ngModel)]="otp" name="otp" maxlength="6" required />
-    <button (click)="verifyOtp()">Verify OTP</button>
+  <div class="extra-links" *ngIf="!loading">
+    <p>
+      Don’t have an account?
+      <a (click)="goToSignup()">Sign up</a>
+    </p>
+    <p>
+      <a routerLink="/forgot-password">Forgot password?</a>
+    </p>
   </div>
 </div>
-
-<!-- Message -->
-<p
-  *ngIf="message"
-  [ngStyle]="{
-    color:
-      messageType === 'success'
-        ? 'green'
-        : messageType === 'error'
-        ? 'red'
-        : 'orange'
-  }"
-  style="margin-top: 15px;"
->
-  {{ message }}
-</p>

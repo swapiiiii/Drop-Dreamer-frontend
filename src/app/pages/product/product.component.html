@@ -1,0 +1,33 @@
+<div class="navbar">
+  <h1 class="logo">Drop Dreamer</h1>
+  <div class="nav-right">
+    <ng-container *ngIf="!isLoggedIn; else loggedIn">
+      <a routerLink="/login" class="btn">Login</a>
+      <a routerLink="/signup" class="btn">Sign Up</a>
+    </ng-container>
+
+    <ng-template #loggedIn>
+      <div class="profile">
+        <span class="username">👤 {{ username }}</span>
+        <button class="logout-btn" (click)="logout()">Logout</button>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<div class="product-section">
+  <h2>Our Products</h2>
+
+  <div *ngIf="loading" class="loader">Loading products...</div>
+  <p *ngIf="error" class="error">{{ error }}</p>
+
+  <div class="product-list" *ngIf="!loading && products.length > 0">
+    <div class="product-card" *ngFor="let p of products">
+      <h3>{{ p.name }}</h3>
+      <p>{{ p.description }}</p>
+      <p><strong>₹{{ p.price }}</strong></p>
+    </div>
+  </div>
+
+  <p *ngIf="!loading && products.length === 0">No products available.</p>
+</div>
