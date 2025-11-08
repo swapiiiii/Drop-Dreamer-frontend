@@ -3,6 +3,18 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl1?: string;
+  imageUrl2?: string;
+  imageUrl3?: string;
+  imageUrl4?: string;
+  imageUrl5?: string;
+}
+
 @Component({
   selector: 'app-product',
   standalone: true,
@@ -13,37 +25,35 @@ import { HttpClient } from '@angular/common/http';
 export class ProductComponent implements OnInit {
   isLoggedIn = false;
   username = '';
-  products: any[] = [];
+  products: Product[] = [];
   loading = false;
   error = '';
 
+  // ✅ Backend URL
   private baseUrl = 'https://drop-dreamer-backend-production.up.railway.app';
 
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
-  const user = localStorage.getItem('user');
+    const user = localStorage.getItem('user');
 
-  if (user) {
-    const parsedUser = JSON.parse(user);
-    this.isLoggedIn = true;
-    this.username = parsedUser.firstName || parsedUser.email || 'User';
-  } else {
-    // ✅ Don't redirect — just show products publicly
-    this.isLoggedIn = false;
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      this.isLoggedIn = true;
+      this.username = parsedUser.firstName || parsedUser.email || 'User';
+    } else {
+      this.isLoggedIn = false;
+    }
+
+    this.fetchProducts();
   }
 
-  this.fetchProducts();
-}
-
-
-  // ✅ Fetch all products from backend
+  // ✅ Fetch all products from backend (with 5 image URLs)
   fetchProducts() {
     this.loading = true;
-    this.http.get(`${this.baseUrl}/products`).subscribe({
-      next: (res: any) => {
+    this.http.get<Product[]>(`${this.baseUrl}/products`).subscribe({
+      next: (res) => {
         this.loading = false;
-        // Ensure array type
         this.products = Array.isArray(res) ? res : [];
       },
       error: (err) => {
@@ -54,15 +64,12 @@ export class ProductComponent implements OnInit {
     });
   }
 
-  // ✅ Logout and redirect to login page
+  // ✅ Logout and redirect back to products page
   logout() {
-  localStorage.removeItem('user');
-  localStorage.removeItem('token');
-  this.isLoggedIn = false;
-  this.username = '';
-  
-  // ✅ Redirect back to public products page instead of login
-  this.router.navigate(['/products']);
-}
-
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    this.isLoggedIn = false;
+    this.username = '';
+    this.router.navigate(['/products']);
+  }
 }

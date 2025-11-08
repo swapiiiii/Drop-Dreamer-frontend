@@ -20,10 +20,15 @@
 
   <div class="product-grid" *ngIf="!loading && !error">
     <div *ngFor="let product of products" class="product-card">
-      <img
-        [src]="product.imageUrl1 || 'https://via.placeholder.com/200'"
-        alt="{{ product.name }}"
-      />
+      <!-- 🖼️ Multiple product images -->
+      <div class="product-images">
+        <img
+          *ngFor="let img of [product.imageUrl1, product.imageUrl2, product.imageUrl3, product.imageUrl4, product.imageUrl5]"
+          [src]="img || 'https://via.placeholder.com/200'"
+          alt="{{ product.name }}"
+        />
+      </div>
+
       <h3>{{ product.name }}</h3>
       <p>{{ product.description }}</p>
       <span class="price">₹{{ product.price }}</span>
