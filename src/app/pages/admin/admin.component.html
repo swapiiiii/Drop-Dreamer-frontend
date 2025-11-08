@@ -1,0 +1,65 @@
+<div class="admin-container">
+  <header>
+    <h2>👑 Admin Dashboard</h2>
+    <button (click)="logout()" class="logout-btn">Logout</button>
+  </header>
+
+  <p class="message" *ngIf="message">{{ message }}</p>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">Loading products...</div>
+
+  <!-- Product Form -->
+  <div class="form-section">
+    <h3>{{ editMode ? '✏️ Edit Product' : '➕ Add New Product' }}</h3>
+
+    <form (ngSubmit)="saveProduct()">
+      <input type="text" [(ngModel)]="newProduct.name" name="name" placeholder="Product Name" required />
+      <textarea [(ngModel)]="newProduct.description" name="description" placeholder="Description"></textarea>
+      <input type="number" [(ngModel)]="newProduct.price" name="price" placeholder="Price" required />
+      <input type="text" [(ngModel)]="newProduct.category" name="category" placeholder="Category" />
+      <input type="number" [(ngModel)]="newProduct.stock" name="stock" placeholder="Stock" />
+
+      <!-- Image URLs -->
+      <input type="text" [(ngModel)]="newProduct.imageUrl1" name="imageUrl1" placeholder="Image URL 1" />
+      <input type="text" [(ngModel)]="newProduct.imageUrl2" name="imageUrl2" placeholder="Image URL 2" />
+      <input type="text" [(ngModel)]="newProduct.imageUrl3" name="imageUrl3" placeholder="Image URL 3" />
+      <input type="text" [(ngModel)]="newProduct.imageUrl4" name="imageUrl4" placeholder="Image URL 4" />
+      <input type="text" [(ngModel)]="newProduct.imageUrl5" name="imageUrl5" placeholder="Image URL 5" />
+
+      <button type="submit">
+        {{ editMode ? 'Update Product' : 'Add Product' }}
+      </button>
+      <button type="button" (click)="resetForm()" *ngIf="editMode">Cancel</button>
+    </form>
+  </div>
+
+  <!-- Product List -->
+  <div class="product-list">
+    <h3>📦 All Products</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Category</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of products">
+          <td>{{ p.id }}</td>
+          <td>{{ p.name }}</td>
+          <td>₹{{ p.price }}</td>
+          <td>{{ p.category }}</td>
+          <td>
+            <button (click)="editProduct(p)">Edit</button>
+            <button (click)="deleteProduct(p.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

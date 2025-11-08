@@ -23,49 +23,66 @@ export class LoginComponent {
   constructor(private http: HttpClient, private router: Router) {}
 
   onLogin() {
-    if (!this.email || !this.password) {
-      this.message = '⚠️ Please enter both email and password.';
-      this.messageType = 'warning';
-      return;
-    }
-
-    this.loading = true;
-    const body = { email: this.email, password: this.password };
-
-    this.http.post(`${this.baseUrl}/login`, body).subscribe({
-      next: (res: any) => {
-        this.loading = false;
-
-        if (res.message === 'User login successful') {
-          this.message = '✅ Login successful!';
-          this.messageType = 'success';
-
-          // ✅ Store all user info properly
-          const userData = {
-            email: res.email,
-            firstName: res.firstName,
-            lastName: res.lastName,
-            role: res.role
-          };
-          localStorage.setItem('user', JSON.stringify(userData));
-          localStorage.setItem('token', res.token);
-
-          // ✅ Redirect to products page
-          setTimeout(() => {
-            this.router.navigate(['/products']);
-          }, 500);
-        } else {
-          this.message = res.message || 'Unexpected response.';
-          this.messageType = 'warning';
-        }
-      },
-      error: (err) => {
-        this.loading = false;
-        this.message = err.error?.message || '❌ Invalid credentials.';
-        this.messageType = 'error';
-      }
-    });
+  if (!this.email || !this.password) {
+    this.message = '⚠️ Please enter both email and password.';
+    this.messageType = 'warning';
+    return;
   }
+
+  this.loading = true;
+  const body = { email: this.email, password: this.password };
+
+  this.http.post(`${this.baseUrl}/login`, body).subscribe({
+    next: (res: any) => {
+      this.loading = false;
+
+      if (res.message === 'User login successful') {
+        this.message = '✅ Login successful!';
+        this.messageType = 'success';
+
+        const userData = {
+          email: res.email,
+          firstName: res.firstName,
+          lastName: res.lastName,
+          role: res.role
+        };
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('token', res.token);
+
+        setTimeout(() => {
+          this.router.navigate(['/products']);
+        }, 500);
+      } 
+      // ✅ Handle admin login redirection here
+      else if (res.message === 'Admin login successful') {
+        this.message = '👑 Admin login successful!';
+        this.messageType = 'success';
+
+        const adminData = {
+          email: res.email,
+          name: res.name,
+          role: res.role
+        };
+        localStorage.setItem('user', JSON.stringify(adminData));
+        localStorage.setItem('token', res.token);
+
+        setTimeout(() => {
+          this.router.navigate(['/admin']); // ✅ redirect admin here
+        }, 500);
+      } 
+      else {
+        this.message = res.message || 'Unexpected response.';
+        this.messageType = 'warning';
+      }
+    },
+    error: (err) => {
+      this.loading = false;
+      this.message = err.error?.message || '❌ Invalid credentials.';
+      this.messageType = 'error';
+    }
+  });
+}
+
 
   goToSignup() {
     this.router.navigate(['/signup']);
