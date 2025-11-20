@@ -4,7 +4,7 @@
 
     <div *ngIf="isLoggedIn; else guestLinks" class="user-info">
       <span>Welcome, {{ username }}</span>
-      <button (click)="logout()">Logout</button>
+      <button class="logout-btn" (click)="logout()">Logout</button>
     </div>
 
     <ng-template #guestLinks>
@@ -20,7 +20,6 @@
 
   <div class="product-grid" *ngIf="!loading && !error">
     <div *ngFor="let product of products" class="product-card">
-      <!-- 🖼️ Multiple product images -->
       <div class="product-images">
         <img
           *ngFor="let img of [product.imageUrl1, product.imageUrl2, product.imageUrl3, product.imageUrl4, product.imageUrl5]"

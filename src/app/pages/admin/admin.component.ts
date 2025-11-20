@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-admin',
@@ -12,25 +13,28 @@ import { Router } from '@angular/router';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
+
   products: any[] = [];
+  loading = false;
+  message = '';
+
   newProduct: any = {
     name: '',
     description: '',
-    price: 0,
+    price: '',
     category: '',
-    stock: 0,
+    stock: '',
     imageUrl1: '',
     imageUrl2: '',
     imageUrl3: '',
     imageUrl4: '',
     imageUrl5: ''
   };
-  editMode: boolean = false;
-  selectedProductId: number | null = null;
-  message = '';
-  loading = false;
 
-  private baseUrl = 'https://drop-dreamer-backend-production.up.railway.app/products';
+  editMode = false;
+  selectedProductId: number | null = null;
+
+  baseUrl = environment.apiBaseUrl + '/products';
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -38,9 +42,8 @@ export class AdminComponent implements OnInit {
     const user = localStorage.getItem('user');
     const token = localStorage.getItem('token');
 
-    // ✅ Redirect non-admin users
     if (!user || !token || JSON.parse(user).role !== 'ADMIN') {
-      alert('Unauthorized! Only admin can access this page.');
+      alert('Unauthorized: Admin only');
       this.router.navigate(['/login']);
       return;
     }
@@ -48,108 +51,123 @@ export class AdminComponent implements OnInit {
     this.fetchProducts();
   }
 
-  getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
+  // Auth Header
+  getAuthHeaders() {
+    const token = localStorage.getItem('token') || '';
+    return {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      })
+    };
   }
 
-  // ✅ Fetch all products
+  // PUBLIC FETCH
   fetchProducts() {
     this.loading = true;
-    this.http.get(`${this.baseUrl}`).subscribe({
+
+    this.http.get(this.baseUrl).subscribe({
       next: (res: any) => {
         this.products = res;
         this.loading = false;
       },
       error: (err) => {
+        console.error('Get products error:', err);
+        this.message = 'Failed to load products';
         this.loading = false;
-        this.message = '❌ Failed to fetch products';
-        console.error(err);
       }
     });
   }
 
-  // ✅ Add or Update product
+  // ADD OR UPDATE PRODUCT
   saveProduct() {
+    this.message = '';
+
+    const cleanProduct = { ...this.newProduct };
+
+    // Remove fields that should not go to backend
+    delete cleanProduct.id;
+    delete cleanProduct.createdAt;
+    delete cleanProduct.updatedAt;
+
     const headers = this.getAuthHeaders();
 
-    if (this.editMode && this.selectedProductId) {
-      // 🔄 Update product
-      this.http.put(`${this.baseUrl}/${this.selectedProductId}`, this.newProduct, { headers }).subscribe({
-        next: () => {
-          this.message = '✅ Product updated successfully';
-          this.resetForm();
-          this.fetchProducts();
-        },
-        error: (err) => {
-          this.message = '❌ Failed to update product';
-          console.error(err);
-        }
-      });
+    if (this.editMode) {
+      // UPDATE
+      this.http.put(`${this.baseUrl}/${this.selectedProductId}`, cleanProduct, headers)
+        .subscribe({
+          next: () => {
+            this.message = 'Product updated successfully';
+            this.resetForm();
+            this.fetchProducts();
+          },
+          error: (err) => {
+            console.error('Update error:', err);
+            this.message = 'Failed to update product';
+          }
+        });
+
     } else {
-      // ➕ Add product
-      this.http.post(`${this.baseUrl}/add`, this.newProduct, { headers }).subscribe({
-        next: () => {
-          this.message = '✅ Product added successfully';
-          this.resetForm();
-          this.fetchProducts();
-        },
-        error: (err) => {
-          this.message = '❌ Failed to add product';
-          console.error(err);
-        }
-      });
+      // ADD PRODUCT
+      this.http.post(`${this.baseUrl}/add`, cleanProduct, headers)
+        .subscribe({
+          next: () => {
+            this.message = 'Product added successfully';
+            this.resetForm();
+            this.fetchProducts();
+          },
+          error: (err) => {
+            console.error('Add error:', err);
+            this.message = 'Failed to add product';
+          }
+        });
     }
   }
 
-  // ✅ Edit product (populate form)
+  // Load product for editing
   editProduct(product: any) {
     this.newProduct = { ...product };
     this.selectedProductId = product.id;
     this.editMode = true;
   }
 
-  // ✅ Delete product
+  // DELETE PRODUCT
   deleteProduct(id: number) {
-    if (!confirm('Are you sure you want to delete this product?')) return;
+    if (!confirm('Delete this product?')) return;
 
     const headers = this.getAuthHeaders();
-    this.http.delete(`${this.baseUrl}/${id}`, { headers }).subscribe({
+
+    this.http.delete(`${this.baseUrl}/${id}`, headers).subscribe({
       next: () => {
-        this.message = '🗑️ Product deleted successfully';
+        this.message = 'Product deleted successfully';
         this.fetchProducts();
       },
       error: (err) => {
-        this.message = '❌ Failed to delete product';
-        console.error(err);
+        console.error('Delete error:', err);
+        this.message = 'Failed to delete product';
       }
     });
   }
 
-  // ✅ Reset form
   resetForm() {
+    this.editMode = false;
+    this.selectedProductId = null;
     this.newProduct = {
       name: '',
       description: '',
-      price: 0,
+      price: '',
       category: '',
-      stock: 0,
+      stock: '',
       imageUrl1: '',
       imageUrl2: '',
       imageUrl3: '',
       imageUrl4: '',
       imageUrl5: ''
     };
-    this.selectedProductId = null;
-    this.editMode = false;
   }
 
-  // ✅ Logout
   logout() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    localStorage.clear();
     this.router.navigate(['/login']);
   }
 }

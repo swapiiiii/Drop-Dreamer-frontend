@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent {
   messageType: 'success' | 'error' | 'warning' | '' = '';
   loading = false;
 
-  private baseUrl = 'https://drop-dreamer-backend-production.up.railway.app/auth';
+  //private baseUrl = 'https://drop-dreamer-backend-production.up.railway.app/auth';
+  private baseUrl=environment.apiBaseUrl + '/auth';
 
   constructor(private http: HttpClient, private router: Router) {}
 

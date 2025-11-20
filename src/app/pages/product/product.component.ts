@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+
 
 interface Product {
   id: number;
@@ -30,7 +32,9 @@ export class ProductComponent implements OnInit {
   error = '';
 
   // ✅ Backend URL
-  private baseUrl = 'https://drop-dreamer-backend-production.up.railway.app';
+  //private baseUrl = 'https://drop-dreamer-backend-production.up.railway.app';
+    private baseUrl=environment.apiBaseUrl ;
+
 
   constructor(private http: HttpClient, private router: Router) {}
 
