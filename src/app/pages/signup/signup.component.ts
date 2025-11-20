@@ -2,14 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router'; // <-- import RouterModule
 import { environment } from '../../../environments/environment';
-
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule], // <-- add RouterModule here
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
@@ -26,9 +25,7 @@ export class SignupComponent {
   messageType: 'success' | 'error' | 'warning' | '' = '';
   loading = false;
 
-  //private baseUrl = 'https://drop-dreamer-backend-production.up.railway.app/auth';
-      private baseUrl=environment.apiBaseUrl +'/auth';
-
+  private baseUrl = environment.apiBaseUrl + '/auth';
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -94,16 +91,12 @@ export class SignupComponent {
           this.message = '✅ Email verified successfully!';
           this.messageType = 'success';
 
-          // ✅ Auto-login after verification
+          // Auto-login after verification
           if (res.user && res.token) {
             localStorage.setItem('user', JSON.stringify(res.user));
             localStorage.setItem('token', res.token);
-
-            setTimeout(() => {
-              this.router.navigate(['/products']); // fixed route
-            }, 800);
+            setTimeout(() => this.router.navigate(['/products']), 800);
           } else {
-            // Fallback → Go to login page
             setTimeout(() => this.router.navigate(['/login']), 1500);
           }
         } else {
@@ -117,5 +110,10 @@ export class SignupComponent {
         this.messageType = 'error';
       }
     });
+  }
+
+  // Navigate to login manually
+  goToLogin() {
+    this.router.navigate(['/login']);
   }
 }

@@ -1,4 +1,5 @@
 <div class="product-container">
+
   <header class="product-header">
     <h1>🛍️ Drop Dreamer Products</h1>
 
@@ -15,22 +16,38 @@
     </ng-template>
   </header>
 
+  <!-- ✅ Category Filter -->
+  <div class="filter-box">
+  <label for="category">Filter by Category:</label>
+
+  <select (change)="filterByCategory($any($event.target).value)">
+  <option value="all">All Products</option>
+  <option value="cricket">Cricket</option>
+  <option value="football">Football</option>
+</select>
+
+</div>
+
+
   <div *ngIf="loading" class="loading">Loading products...</div>
   <div *ngIf="error" class="error">{{ error }}</div>
 
+  <!-- Product List -->
   <div class="product-grid" *ngIf="!loading && !error">
     <div *ngFor="let product of products" class="product-card">
+
       <div class="product-images">
-        <img
+        <img 
           *ngFor="let img of [product.imageUrl1, product.imageUrl2, product.imageUrl3, product.imageUrl4, product.imageUrl5]"
           [src]="img || 'https://via.placeholder.com/200'"
-          alt="{{ product.name }}"
-        />
+        >
       </div>
 
       <h3>{{ product.name }}</h3>
       <p>{{ product.description }}</p>
       <span class="price">₹{{ product.price }}</span>
+
     </div>
   </div>
+
 </div>

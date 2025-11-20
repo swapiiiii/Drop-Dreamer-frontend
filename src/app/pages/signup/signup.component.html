@@ -1,4 +1,5 @@
 <div class="signup-container">
+  <!-- Headings -->
   <h2 *ngIf="step === 'signup'">Create Account</h2>
   <h2 *ngIf="step === 'verify'">Verify Your Email</h2>
 
@@ -26,16 +27,14 @@
   </form>
 
   <!-- OTP Verification Form -->
-  <!-- OTP Verification -->
-<div *ngIf="step === 'verify' && !loading" class="otp-step">
-  <h3>Verify Email</h3>
-  <p>Enter the OTP sent to {{ email }}</p>
-  <input type="text" [(ngModel)]="otp" name="otp" maxlength="6" required />
-  <button (click)="onVerifyOtp()">Verify OTP</button>
-</div>
+  <div *ngIf="step === 'verify' && !loading" class="otp-step">
+    <h3>Verify Email</h3>
+    <p>Enter the OTP sent to {{ email }}</p>
+    <input type="text" [(ngModel)]="otp" name="otp" maxlength="6" required />
+    <button (click)="onVerifyOtp()">Verify OTP</button>
+  </div>
 
-
-  <!-- Message -->
+  <!-- Messages -->
   <p
     *ngIf="message"
     [ngStyle]="{
@@ -51,7 +50,10 @@
     {{ message }}
   </p>
 
+  <!-- Login Link -->
   <p *ngIf="step === 'signup'" class="login-link">
-    Already have an account? <a routerLink="/login">Login</a>
+    Already have an account? 
+    <!-- Use routerLink or programmatic click -->
+    <a (click)="goToLogin()" style="cursor: pointer;">Login</a>
   </p>
 </div>
